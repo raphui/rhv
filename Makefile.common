@@ -1,0 +1,53 @@
+subdirs-y :=
+dep = $(obj-y:.o=.d)
+
+include $(dir)/Makefile
+
+prepend-dir-to = $(addprefix $(dir)/,$1)
+prepend-dir = $(foreach d,$($1),$(call prepend-dir-to,$(d)))
+
+prepend-objs-to = $(addprefix $(OBJS_DIR)$(subst $(HV_BASE),,$(dir))/, $1)
+prepend-objs = $(foreach d,$($1),$(call prepend-objs-to,$(d)))
+
+CUR_OBJS_DIR := $(addsuffix $(subst $(HV_BASE),,$(dir)), $(OBJS_DIR))
+
+$(call prepend-dir,subdirs-y):
+	$(PREFIX)$(MAKE) --no-print-directory -f Makefile.common dir=$@ file=Makefile $(MAKECMDGOALS)
+
+all: $(call prepend-dir,subdirs-y) $(call prepend-objs,obj-y) $(call prepend-objs,extra-y)
+	$(PREFIX)echo $(call prepend-objs,obj-y) >> objects.lst
+
+clean: $(call prepend-dir,subdirs-y)
+	$(PREFIX)rm -f $(call prepend-objs,obj-y) $(call prepend-objs,dep) \
+	      $(call prepend-objs,extra-y)
+
+build = $(PREFIX)echo "$1 $(subst $(OBJS_DIR)/,,$@)"
+
+$(CUR_OBJS_DIR)%.o: $(dir)/%.c
+	$(call build,CC)
+	$(PREFIX)$(MKDIR) $(dir $@)
+	$(PREFIX)$(CC) $(CFLAGS) -MMD -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
+
+$(CUR_OBJS_DIR)%.o: $(dir)/%.S
+	$(call build,CC)
+	$(PREFIX)$(MKDIR) $(dir $@)
+	$(PREFIX)$(CC) $(CFLAGS) -MMD -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
+
+$(CUR_OBJS_DIR)%.lds: $(dir)/%.lds.S
+	$(call build,LDS)
+	$(PREFIX)$(MKDIR) $(dir $@)
+	$(PREFIX)$(LDS) $(LDSFLAGS) -o $@ $<
+	$(PREFIX)mv $@ $(HV_BASE)/$(linker_files)
+
+$(CUR_OBJS_DIR)%.o: $(dir)/%.dts
+	$(call build,DTC)
+	$(PREFIX)$(MKDIR) $(dir $@)
+	$(PREFIX)$(CPP) -MMD -MF $(patsubst %.o,%.d,$@) $(DTCPPFLAGS) $< > $@.tmp
+	$(PREFIX)$(DTC) -q -Idts -Odtb $@.tmp > $(dtb)
+	$(PREFIX)$(DTC) -q -Idts -Oasm $@.tmp > $(dtb).asm
+	$(PREFIX)$(OBJCOPY) -I binary -O elf32-littlearm -B arm --rename-section .data=.text,contents,readonly $(dtb) $@
+
+
+-include $(addprefix $(CUR_OBJS_DIR),$(dep))
+
+.PHONY: all clean $(call prepend-dir,subdirs-y)
