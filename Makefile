@@ -12,7 +12,7 @@ INCLUDES	+= -I$(HV_BASE)/third_party/lib/tlsf
 
 
 ASFLAGS	:= -g $(INCLUDES)
-CFLAGS  :=  -Wall -g $(INCLUDES) -MD -MP -nostdlib -nostdinc -fno-builtin -ffunction-sections 
+CFLAGS  :=  -Wall -g $(INCLUDES) -MD -MP -nostdlib -nostdinc -fno-builtin -ffunction-sections -march=armv8-a+nosimd+nofp
 LDFLAGS	:= -g $(INCLUDES) -Trhv.lds -nostartfiles -nostdlib -Wl,-Map=rhv.map
 
 CC := $(CROSS_COMPILE)gcc
