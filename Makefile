@@ -28,6 +28,7 @@ endif
 obj-y := start.o
 obj-y += exceptions.o
 obj-y += interrupts.o
+obj-y += pl011.o
 obj-y += hv.o
 
 subdirs-y := mm

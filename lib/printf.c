@@ -34,6 +34,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pl011.h>
 
 #include "printf.h"
 
@@ -78,7 +79,7 @@
 extern void k_putchar(char c);
 void k_putchar(char c)
 {
-	return;
+	pl011_write(&c, 1);
 }
 
 
