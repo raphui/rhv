@@ -62,7 +62,7 @@ SECTIONS
   PROVIDE (end = .);
   .stack :
   {
-    _stack = .;
+    _stack = . + 0x800;
     *(.stack)
   } > ram
 }
