@@ -8,7 +8,9 @@ entry_el3:
 	adr x0, entry_el2
 	msr ELR_EL3, x0
 
+	/* Mask all interrupts */
 	mov x0, #0x9
+	/* Set the target EL and stack */
 	mov x1, #0x3C0
 	orr x0, x1, x0
 	msr SPSR_EL3, x0
@@ -23,7 +25,9 @@ entry_el2:
 	msr VBAR_EL2, x1
 
 	mrs x0, SPSR_EL2
+	/* Mask all interrupts */
 	mov x0, #0x9
+	/* Set the target EL and stack */
 	mov x1, #0x3C0
 	orr x0, x1, x0
 	msr SPSR_EL2, x0

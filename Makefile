@@ -27,6 +27,7 @@ endif
 
 obj-y := start.o
 obj-y += exceptions.o
+obj-y += interrupts.o
 obj-y += hv.o
 
 subdirs-y := mm
@@ -63,7 +64,7 @@ include $(wildcard *.d)
  
 clean:
 	$(PREFIX)$(MAKE) -f Makefile.common dir=$(HV_BASE) $@
-	$(PREFIX)rm $(TARGET)
+	-$(PREFIX)rm $(TARGET)
 
 dist-clean: clean
 	$(PREFIX)$(RM) `find . -name *.d`
