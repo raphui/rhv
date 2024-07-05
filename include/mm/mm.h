@@ -9,6 +9,7 @@ extern int mem_alloc;
 
 extern int heap_init(void);
 extern void *kmalloc(size_t size);
+extern void *kmalloc_align(size_t align, size_t size);
 extern void kfree(void *mem);
 
 #ifdef CONFIG_DLMALLOC
