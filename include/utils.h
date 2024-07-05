@@ -1,12 +1,17 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define PAGE_SIZE	4096
 
 void writel(unsigned int reg, unsigned int val);
 unsigned int readl(unsigned int reg);
 unsigned int next_power_of_2(unsigned int n);
 
+#define IS_ALIGNED(x, a)  (((x) & ((typeof(x))(a) - 1)) == 0)
 #define ALIGN(x, a)	(((x) + (a) - 1) & ~((a) - 1))
+#define ALIGN_DOWN(x, a)        ALIGN((x) - ((a) - 1), (a))
+#define PAGE_ALIGN(x)	ALIGN(x, PAGE_SIZE)
+#define PAGE_ALIGN_DOWN(x) ALIGN_DOWN(x, PAGE_SIZE)
 
 #define min(x, y) ({                            \
 	typeof(x) _min1 = (x);                  \
