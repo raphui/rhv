@@ -2,6 +2,12 @@
 #include <interrupts.h>
 #include <printf.h>
 #include <pl011.h>
+#include <mmu.h>
+#include <mm/mm.h>
+#include <sizes.h>
+
+extern uint64_t _stext[];
+extern uint64_t _etext[];
 
 void hv(void)
 {
@@ -9,7 +15,30 @@ void hv(void)
 
 	pl011_init();
 
-	printf("Hello World!\n");
+	heap_init();
+
+	mmu_enable();
+
+	mmu_remap_range(0x0, 0x0, PAGE_SIZE, MAP_FAULT);
+
+#define MMU_TEST
+#ifdef MMU_TEST
+	printf("Testing MMU...\n");
+	printf("Access to 0x%x...", &_stext);
+
+	uint64_t val = *(uint64_t *)_stext;
+
+	printf("OK\n");
+
+	printf("Map 0x%x as fault\n", &_stext);
+
+	mmu_remap_range(&_stext, &_stext, PAGE_SIZE, MAP_FAULT);
+	printf("Access to 0x%x...", &_stext);
+
+	val = *(uint64_t *)_stext;
+
+	printf("OK\n");
+#endif
 
 	while(1)
 		;
