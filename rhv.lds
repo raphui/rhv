@@ -14,6 +14,7 @@ SECTIONS
 {
   /* Read-only sections, merged into text segment: */
   . = SEGMENT_START("text-segment", 0x40000000);
+  _stext = .;
   .text :
   {
     _text = .;
@@ -25,6 +26,7 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
   } > ram
+  _etext = .;
   PROVIDE(__etext = .);
   PROVIDE(_etext = .);
   PROVIDE(etext = .);
