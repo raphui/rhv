@@ -187,10 +187,6 @@ static void init_range(size_t total_level0_tables)
 	uint64_t addr = 0;
 
 	while (total_level0_tables--) {
-		printf("total_level0_tables: %d\n", total_level0_tables);
-		printf("addr: 0x%llx\n", addr);
-		printf("L0_XLAT_SIZE: 0x%llx\n", L0_XLAT_SIZE);
-		printf("ttb: 0x%llx\n", ttb);
 		mmu_remap_range((void *)addr, (void *)addr, L0_XLAT_SIZE, MAP_UNCACHED);
 		split_block(ttb, 0);
 		addr += L0_XLAT_SIZE;
