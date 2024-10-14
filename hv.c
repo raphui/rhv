@@ -21,7 +21,7 @@ void hv(void)
 
 	mmu_remap_range(0x0, 0x0, PAGE_SIZE, MAP_FAULT);
 
-#define MMU_TEST
+//#define MMU_TEST
 #ifdef MMU_TEST
 	printf("Testing MMU...\n");
 	printf("Access to 0x%x...", &_stext);

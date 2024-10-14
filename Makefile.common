@@ -23,23 +23,23 @@ clean: $(call prepend-dir,subdirs-y)
 
 build = $(PREFIX)echo "$1 $(subst $(OBJS_DIR)/,,$@)"
 
-$(CUR_OBJS_DIR)%.o: $(dir)/%.c
+$(CUR_OBJS_DIR)%.o: $(dir)%.c
 	$(call build,CC)
 	$(PREFIX)$(MKDIR) $(dir $@)
 	$(PREFIX)$(CC) $(CFLAGS) -MMD -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
 
-$(CUR_OBJS_DIR)%.o: $(dir)/%.S
+$(CUR_OBJS_DIR)%.o: $(dir)%.S
 	$(call build,CC)
 	$(PREFIX)$(MKDIR) $(dir $@)
 	$(PREFIX)$(CC) $(CFLAGS) -MMD -MF $(patsubst %.o,%.d,$@) -c -o $@ $<
 
-$(CUR_OBJS_DIR)%.lds: $(dir)/%.lds.S
+$(CUR_OBJS_DIR)%.lds: $(dir)%.lds.S
 	$(call build,LDS)
 	$(PREFIX)$(MKDIR) $(dir $@)
 	$(PREFIX)$(LDS) $(LDSFLAGS) -o $@ $<
 	$(PREFIX)mv $@ $(HV_BASE)/$(linker_files)
 
-$(CUR_OBJS_DIR)%.o: $(dir)/%.dts
+$(CUR_OBJS_DIR)%.o: $(dir)%.dts
 	$(call build,DTC)
 	$(PREFIX)$(MKDIR) $(dir $@)
 	$(PREFIX)$(CPP) -MMD -MF $(patsubst %.o,%.d,$@) $(DTCPPFLAGS) $< > $@.tmp

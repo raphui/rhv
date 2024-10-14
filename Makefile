@@ -31,6 +31,9 @@ obj-y += interrupts.o
 obj-y += pl011.o
 obj-y += mmu.o
 obj-y += cache-armv8.o
+obj-y += asm.o
+obj-y += vm.o
+obj-y += vcpu.o
 obj-y += hv.o
 
 subdirs-y := mm
