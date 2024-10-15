@@ -10,6 +10,7 @@ static struct list_node vms;
 
 struct vm *vm_create(int num_vcpus, void (*entry)(void))
 {
+	int ret;
 	struct vm *vm = kmalloc(sizeof(*vm));
 
 	if (!vm) {
@@ -22,10 +23,10 @@ struct vm *vm_create(int num_vcpus, void (*entry)(void))
 	for (int i = 0; i < vm->num_vcpus; i++) {
 		memset(&vm->vcpus[i], 0, sizeof(struct vcpu));
 
-		vm->vcpus[i].stack = kmalloc(SZ_8K);
-		if (!vm->vcpus[i].stack) {
-			printf("fail to allocate vm stack\n");
-			goto err;
+		ret = vcpu_init(&vm->vcpus[i], SZ_8K, entry);
+		if (ret < 0) {
+			printf("fail to vcpu\n");
+			goto err_init_vcpu;
 		}
 	}
 
@@ -34,13 +35,17 @@ struct vm *vm_create(int num_vcpus, void (*entry)(void))
 	vm->mem = kmalloc(SZ_256M);
 	if (!vm->mem) {
 		printf("fail to allocate vm mem\n");
-		goto err;
+		goto err_init_vcpu;
 	}
 
 	list_add_tail(&vms, &vm->node);
 
-err:
 	return vm;
+
+err_init_vcpu:
+	kfree(vm);
+err:
+	return NULL;
 }
 
 int vm_start(struct vm *vm)

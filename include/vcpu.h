@@ -20,7 +20,7 @@ struct vcpu {
 	int affinity;
 };
 
-void vcpu_init(struct vcpu *vcpu);
+int vcpu_init(struct vcpu *vcpu, int stack_size, void (*entry)(void));
 void vcpu_save_state(struct vcpu_state *state);
 void vcpu_restore_state(const struct vcpu_state *state);
 
