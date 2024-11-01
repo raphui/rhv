@@ -1,6 +1,8 @@
 #include <errno.h>
 #include <vcpu.h>
+#include <stdio.h>
 #include <string.h>
+#include <mm/mm.h>
 
 extern void __vcpu_save_context(void);
 extern void __vcpu_restore_context(void);
@@ -18,12 +20,14 @@ int vcpu_init(struct vcpu *vcpu, int stack_size, void (*entry)(void))
 
 	vcpu->state = (struct vcpu_state *)vcpu->stack;
 
-	memset(vcpu->state, 0x0, sizeof(struct vcpu_state));
+	for (int i = 0; i < (int)(sizeof(vcpu->state->regs) / sizeof(uint64_t)); i++) {
+		vcpu->state->regs[i] = i;
+	}
 
-	vcpu->state->lr = entry;
+	vcpu->state->lr = (uint64_t)entry;
 	vcpu->state->sp_el0 = 0xCAFECAFE;
 	vcpu->state->sp_el1 = 0x0C0FFEE;
-	vcpu->state->pstate = 0xDEADBEEF;
+	vcpu->state->pstate = 0x3C5;
 
 err:
 	return ret;

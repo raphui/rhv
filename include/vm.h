@@ -14,5 +14,6 @@ struct vm {
 
 
 struct vm *vm_create(int num_vcpus, void (*entry)(void));
+int vm_start(struct vm *vm);
 
 #endif /* VM_H */

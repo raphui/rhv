@@ -32,6 +32,13 @@ entry_el2:
 	orr x0, x1, x0
 	msr SPSR_EL2, x0
 
+	msr SCTLR_EL1, xzr
+
+	//mov x0, #1
+	mov x0, xzr
+	orr x0, x0, #(1 << 31)
+	msr HCR_EL2, x0
+
 	adr x0, _stack
 	mov sp, x0
 

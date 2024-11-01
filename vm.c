@@ -6,6 +6,8 @@
 #include <sizes.h>
 #include <stdio.h>
 
+extern void __vm_start(void *context);
+
 static struct list_node vms;
 
 struct vm *vm_create(int num_vcpus, void (*entry)(void))
@@ -32,7 +34,7 @@ struct vm *vm_create(int num_vcpus, void (*entry)(void))
 
 	vm->thread = entry;
 
-	vm->mem = kmalloc(SZ_256M);
+	vm->mem = kmalloc(SZ_128M);
 	if (!vm->mem) {
 		printf("fail to allocate vm mem\n");
 		goto err_init_vcpu;
@@ -52,6 +54,7 @@ int vm_start(struct vm *vm)
 {
 	int ret = 0;
 
+	__vm_start(vm->vcpus[0].stack);
 
 	return ret;
 }

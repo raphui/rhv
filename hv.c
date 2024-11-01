@@ -20,11 +20,13 @@ void hv(void)
 
 	heap_init();
 
-	vm = vm_create(1, 0xABCDABCD);
+	vm = vm_create(1, (void(*)(void))0xA0000000);
 	if (!vm) {
 		printf("fail to create vm\n");
 	}
 
+
+	vm_start(vm);
 #if 0
 	mmu_enable();
 
