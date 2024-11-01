@@ -14,13 +14,14 @@ struct vcpu_state {
 };
 
 struct vcpu {
-	struct vcpu_state state;
+	struct vcpu_state *state;
 	void *stack;
 	int is_running;
 	int affinity;
 };
 
-void save_vcpu_state(struct vcpu_state* state);
-void restore_vcpu_state(const struct vcpu_state* state);
+void vcpu_init(struct vcpu *vcpu);
+void vcpu_save_state(struct vcpu_state *state);
+void vcpu_restore_state(const struct vcpu_state *state);
 
 #endif /* VCPU_H */

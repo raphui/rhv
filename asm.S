@@ -94,11 +94,8 @@
 	add sp, sp, #32
 .endm
 
-
-
-
-.global __save_vcpu_context
-__save_vcpu_context:
+.global __vcpu_save_context
+__vcpu_save_context:
 	sub  sp, sp, #32
 	push x28, x29
 	push x26, x27
@@ -118,16 +115,18 @@ __save_vcpu_context:
 	mrs  x0, sp_el0
 	mrs  x1, sp_el1
 	mrs  x2, spsr_el2
-	stp  lr, x0, [sp, #regsave_long_offset]
+	mrs  x3, elr_el2
+	stp  x3, x0, [sp, #regsave_long_offset]
 	stp  x1, x2, [sp, #regsave_long_offset + 16]
 
-.global __restore_vcpu_context
-__restore_vcpu_context:
-	ldp  lr, x0, [sp, #regsave_long_offset]
+.global __vcpu_restore_context
+__vcpu_restore_context:
+	ldp  x3, x0, [sp, #regsave_long_offset]
 	ldp  x1, x2, [sp, #regsave_long_offset + 16]
 	msr  sp_el0, x0
 	msr  sp_el1, x1
 	msr  spsr_el2, x2
+	msr  elr_el2, x3
 	pop x0, x1
 	pop x2, x3
 	pop x4, x5
